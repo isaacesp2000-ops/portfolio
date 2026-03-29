@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garçon Magazin – Isaac Espinosa</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { scroll-behavior: smooth; overflow-x: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #1a1a1a; background: #fff; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+
+        . { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        ..visible { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        nav { position: fixed; top: 0; width: 100%; background: #1a1a1a; padding: 1.2rem 0; z-index: 1000; }
+        nav .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        nav .logo img { height: 45px; width: auto; }
+        nav ul { list-style: none; display: flex; gap: 3rem; }
+        nav a { color: white; text-decoration: none; font-weight: 600; font-size: 1rem; transition: color 0.3s; }
+        nav a:hover { color: #ccc; }
+
+        /* HERO */
+        .project-hero { height: 100vh; position: relative; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; animation: scaleIn 0.8s cubic-bezier(0.22,1,0.36,1) both; }
+        .hero-bg { position: absolute; inset: 0; background: #f5f5f5; }
+        .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0.85; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.15) 55%, transparent 100%); }
+        .hero-content { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; width: 100%; padding: 0 3rem 4rem; animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.3s; }
+        .project-tag { display: inline-block; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: #ccc; border: 1px solid #555; padding: 0.3rem 0.9rem; margin-bottom: 1.2rem; }
+        .hero-content h1 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 1.8rem; }
+        .hero-meta { display: flex; gap: 3rem; flex-wrap: wrap; }
+        .hero-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+        .hero-meta-item .label { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: #888; }
+        .hero-meta-item .val { color: #fff; font-size: 0.95rem; font-weight: 500; }
+
+        .back-link { position: absolute; top: 90px; left: 0; right: 0; z-index: 3; }
+        .back-link .container { max-width: 1100px; margin: 0 auto; padding: 0 3rem; }
+        .back-link a { display: inline-flex; align-items: center; gap: 0.5rem; color: #aaa; text-decoration: none; font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+        .back-link a:hover { color: #fff; }
+        .back-link svg { transition: transform 0.3s; }
+        .back-link a:hover svg { transform: translateX(-4px); }
+
+        /* OVERVIEW */
+        .overview-strip { background: #f5f5f5; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; padding: 2.5rem 3rem; }
+        .overview-strip .container { max-width: 1100px; margin: 0 auto; display: flex; gap: 4rem; flex-wrap: wrap; }
+        .overview-item { display: flex; flex-direction: column; gap: 0.3rem; }
+        .overview-item .label { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: #888; }
+        .overview-item .val { font-size: 1rem; font-weight: 600; color: #1a1a1a; }
+
+        /* SECTIONS */
+        .section { padding: 5rem 3rem; }
+        .section .container { max-width: 1100px; margin: 0 auto; }
+        .section-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: #888; font-weight: 600; margin-bottom: 1rem; }
+        .section h2 { font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 700; color: #1a1a1a; margin-bottom: 1.2rem; line-height: 1.3; }
+        .section p { font-size: 0.9rem; line-height: 1.85; color: #444; max-width: 600px; }
+        .section p + p { margin-top: 0.8rem; }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+        .two-col.flip { direction: rtl; }
+        .two-col.flip > * { direction: ltr; }
+
+        /* IMAGES */
+        .img-block { width: 100%; overflow: hidden; }
+        .img-block img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .img-block.contain img { object-fit: contain; }
+        .img-block.wide { aspect-ratio: 16/9; }
+        .img-block.square { aspect-ratio: 1/1; }
+        .img-block.tall { aspect-ratio: 3/4; }
+
+        /* GALLERY — 3 spaltig mit mix */
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.5rem; }
+        .gallery-grid .wide { grid-column: span 2; }
+        .gallery-grid .full { grid-column: span 3; }
+
+        /* PROCESS */
+        .process-section { background: #1a1a1a; padding: 5rem 3rem; }
+        .process-section .container { max-width: 1100px; margin: 0 auto; }
+        .process-section .section-label { color: #666; }
+        .process-section h2 { color: #fff; margin-bottom: 3rem; font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 700; line-height: 1.3; }
+        .process-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .process-step { border-top: 1px solid #2a2a2a; padding-top: 1.5rem; }
+        .step-num { font-size: 2rem; font-weight: 700; color: #2a2a2a; margin-bottom: 0.8rem; }
+        .step-title { font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem; }
+        .step-desc { font-size: 0.85rem; color: #666; line-height: 1.75; }
+
+        /* PLATFORMS TAG */
+        .platform-tags { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .tag { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #ddd; padding: 0.3rem 0.8rem; color: #888; }
+
+        /* NEXT */
+        .next-section { padding: 3rem 3rem; border-top: 1px solid #e0e0e0; }
+        .next-section .container { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+        .next-text { font-size: 1.35rem; font-weight: 500; color: #1a1a1a; line-height: 1.9; }
+        .next-text span { display: block; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: #888; margin-bottom: 0.3rem; }
+        .next-btn { display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: #888; border-radius: 50%; text-decoration: none; flex-shrink: 0; transition: background 0.3s, transform 0.3s; }
+        .next-btn:hover { background: #555; transform: translateX(4px); }
+
+        footer { background: #1a1a1a; color: white; padding: 3rem 2rem; text-align: center; }
+        footer .container { max-width: 1200px; margin: 0 auto; }
+        footer a { color: white; text-decoration: none; margin: 0 1rem; transition: opacity 0.3s; }
+        footer a:hover { opacity: 0.7; }
+
+        @media (max-width: 900px) {
+            .two-col { grid-template-columns: 1fr; gap: 2.5rem; }
+            .two-col.flip { direction: ltr; }
+            .process-steps { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: 1fr 1fr; }
+            .gallery-grid .wide { grid-column: span 2; }
+            .gallery-grid .full { grid-column: span 2; }
+            .section { padding: 4rem 2rem; }
+            .hero-content { padding: 0 2rem 3rem; }
+            .overview-strip .container { gap: 2rem; }
+        }
+        @media (max-width: 600px) {
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-grid .wide, .gallery-grid .full { grid-column: span 1; }
+            .hero-meta { gap: 1.5rem; }
+            .next-section .container { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="container">
+        <a href="index.html" class="logo"><img src="fotos_1/Logo_i.e.png" alt="Logo"></a>
+        <ul>
+            <li><a href="index.html#home">Home</a></li>
+            <li><a href="index.html#portfolio">Projekte</a></li>
+            <li><a href="index.html#kontakt">Kontakt</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- HERO — bildArt media Banner als Hintergrund -->
+<section class="project-hero">
+    <div class="hero-bg">
+        <img src="fotos_1/garcon_magazin/landingpage_bildartmedia.png" alt="bildArt media">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="back-link">
+        <div class="container">
+            <a href="index.html#portfolio">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12L12 19M5 12L12 5"/></svg>
+                Alle Projekte
+            </a>
+        </div>
+    </div>
+    <div class="hero-content">
+        <div class="project-tag">Editorial Design · Social Media · Web · Print</div>
+        <h1>Garçon Magazin</h1>
+        <div class="hero-meta">
+            <div class="hero-meta-item"><span class="label">Auftraggeber</span><span class="val">bildArt media Verlag</span></div>
+            <div class="hero-meta-item"><span class="label">Zeitraum</span><span class="val">2024</span></div>
+            <div class="hero-meta-item"><span class="label">Leistung</span><span class="val">Grafik · Social Media · Web · Print</span></div>
+            <div class="hero-meta-item"><span class="label">Tools</span><span class="val">Photoshop · InDesign · Illustrator</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- OVERVIEW -->
+<div class="overview-strip">
+    <div class="container">
+        <div class="overview-item"><span class="label">Auftraggeber</span><span class="val">bildArt media Verlag</span></div>
+        <div class="overview-item"><span class="label">Plattformen</span><span class="val">Instagram · Web · Print</span></div>
+        <div class="overview-item"><span class="label">Produkte</span><span class="val">Garçon Magazin · Genuss Netzwerk</span></div>
+        <div class="overview-item"><span class="label">Einsatz</span><span class="val">Praktisch verwendet</span></div>
+    </div>
+</div>
+
+<!-- PROJEKTBESCHREIBUNG -->
+<section class="section">
+    <div class="container">
+        <div class="two-col">
+            <div class="">
+                <p class="section-label">Das Projekt</p>
+                <h2>Grafiken die wirklich eingesetzt wurden — für ein echtes Magazin.</h2>
+                <p>Während meiner Zeit beim bildArt media Verlag habe ich für zwei ihrer Produkte gearbeitet: das Garçon Magazin und das Genuss Netzwerk. Beide stehen für gehobene Genusskultur — Essen, Wein, Reisen, Lifestyle.</p>
+                <p>Meine Aufgabe war es, Grafiken in einem einheitlichen visuellen Stil zu erstellen, der über alle Kanäle hinweg funktioniert — von Instagram über die Website bis hin zu Print-Layouts. Alles was ich erstellt habe, wurde tatsächlich veröffentlicht und eingesetzt.</p>
+                <div class="platform-tags">
+                    <span class="tag">Instagram</span>
+                    <span class="tag">Website Garçon</span>
+                    <span class="tag">Website Genuss Netzwerk</span>
+                    <span class="tag">Print</span>
+                </div>
+            </div>
+            <div class="img-block wide" style="background: #fff; border: 1px solid #eee;">
+                <img src="fotos_1/garcon_magazin/landingpage_bildartmedia.png" alt="bildArt media Verlag">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HERAUSFORDERUNG -->
+<section class="section" style="background: #f5f5f5;">
+    <div class="container">
+        <div class="two-col flip">
+            <div class="">
+                <p class="section-label">Die Herausforderung</p>
+                <h2>Einheitlicher Stil — drei Kanäle, zwei Marken.</h2>
+                <p>Die Herausforderung lag in der Konsistenz: Garçon Magazin und Genuss Netzwerk haben zwar denselben Verlag, aber jeweils eine eigene Tonalität und Zielgruppe. Dazu kamen unterschiedliche Formate — Instagram Posts, Website-Banner und Print-Layouts erfordern je andere Bildsprachen und Proportionen.</p>
+                <p>Das Ziel war ein visuelles System, das flexibel genug ist um auf jedem Kanal zu funktionieren — und dabei erkennbar und hochwertig bleibt. Clean, editorial, mit einem starken Gespür für Typografie und Bildkomposition.</p>
+            </div>
+            <div class="img-block" style="aspect-ratio: 4/5; overflow: hidden; background: #fff; border: 1px solid #eee;">
+                <img src="fotos_1/garcon_magazin/muri_drink.png" alt="Garçon Grafik — Wein" style="object-fit: contain; padding: 1rem;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROZESS -->
+<section class="process-section">
+    <div class="container">
+        <p class="section-label">Behind the Scenes</p>
+        <h2 class="">Der Entstehungsprozess</h2>
+        <div class="process-steps">
+            <div class="process-step">
+                <div class="step-num">01</div>
+                <div class="step-title">Stil & System aufbauen</div>
+                <div class="step-desc">Zu Beginn wurden bestehende Publikationen und der redaktionelle Stil des Magazins analysiert. Daraus entstand ein klares visuelles System — Typografie, Farben, Bildsprache — das als Grundlage für alle Grafiken diente.</div>
+            </div>
+            <div class="process-step">
+                <div class="step-num">02</div>
+                <div class="step-title">Produktion & Anpassung</div>
+                <div class="step-desc">Die Grafiken wurden für die jeweiligen Kanäle produziert und formatgerecht angepasst. Instagram-Posts, Website-Header und Print-Layouts folgen unterschiedlichen Regeln — jedes Format wurde einzeln optimiert ohne den Gesamtstil zu brechen.</div>
+            </div>
+            <div class="process-step">
+                <div class="step-num">03</div>
+                <div class="step-title">Veröffentlichung & Einsatz</div>
+                <div class="step-desc">Die fertigen Grafiken wurden direkt vom Verlag eingesetzt — auf Instagram, auf den Websites von Garçon Magazin und Genuss Netzwerk sowie in Print-Veröffentlichungen. Echtes Feedback, echte Reichweite.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GALERIE -->
+<section class="section">
+    <div class="container">
+        <p class="section-label">Ausgewählte Arbeiten</p>
+        <h2 class=" delay-1">Grafiken im Einsatz</h2>
+        <div class="gallery-grid">
+            <!-- Website Banner vollbreit -->
+            <div class="img-block full" style="aspect-ratio: 21/6; background: #fff; border: 1px solid #eee; overflow: hidden;">
+                <img src="fotos_1/garcon_magazin/landingpage_bildartmedia.png" alt="bildArt media Website Banner" style="object-fit: cover; object-position: center;">
+            </div>
+            <!-- Instagram / Print Grafiken -->
+            <div class="img-block square" style="background: #fff; border: 1px solid #eee; overflow: hidden;">
+                <img src="fotos_1/garcon_magazin/muri_drink.png" alt="Garçon Instagram Grafik Wein" style="object-fit: contain; padding: 0.5rem;">
+            </div>
+            <div class="img-block wide" style="background: #fff; border: 1px solid #eee; overflow: hidden;">
+                <img src="fotos_1/garcon_magazin/garcon_seite.jpg" alt="Garçon Magazin Grafik" style="object-fit: contain; padding: 0.5rem;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- NEXT PROJECT -->
+<div class="next-section">
+    <div class="container">
+        <div class="next-text">
+            <span>Nächstes Projekt</span>
+            Transportes Dani
+        </div>
+        <a href="transportes-dani.html" class="next-btn" aria-label="Nächstes Projekt">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12h14M12 5l7 7-7 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </div>
+</div>
+
+<footer id="kontakt">
+    <div class="container">
+        <h3 style="margin-bottom: 1rem;">Lass uns zusammenarbeiten</h3>
+        <p style="margin-bottom: 2rem; color: #ccc;">Interessiert an einer Zusammenarbeit? Ich freue mich auf deine Nachricht!</p>
+        <div>
+            <a href="/cdn-cgi/l/email-protection#214544484f4461444c40484d0f4544">E-Mail</a>
+            <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+            <a href="https://behance.net" target="_blank">Behance</a>
+            <a href="https://instagram.com" target="_blank">Instagram</a>
+        </div>
+        <p style="margin-top: 2rem; font-size: 0.9rem; color: #999;">© 2024 Isaac Espinosa - Alle Rechte vorbehalten</p>
+    </div>
+</footer>
+
+<script>
+    window.scrollTo(0, 0);
+    history.scrollRestoration = 'manual';
+    // Fallback: alles sichtbar machen nach 100ms
+    setTimeout(() => {
+        document.querySelectorAll('.').forEach(el => el.classList.add('visible'));
+    }, 100);
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible');
